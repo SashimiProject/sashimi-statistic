@@ -1,6 +1,71 @@
-type Gravatar @entity {
+type Token @entity {
+  "token address"
   id: ID!
+  symbol: String!
+  name: String!
+  decimals: BigInt!
+}
+
+type Provider @entity {
+  "provider id"
+  id: ID!
+  "privider address"
+  address: Bytes!
+  token: Bytes!
+  lend: Bytes!
   owner: Bytes!
-  displayName: String!
-  imageUrl: String!
+  profit: Bytes!
+  enable: Boolean!
+}
+
+type Pair @entity {
+  "deposit token address"
+  id: ID!
+  "deposit token"
+  deposit: Token!
+  "provider"
+  provider: Provider!
+}
+
+type Transaction @entity {
+  id: ID! # txn hash
+  blockNumber: BigInt!
+  timestamp: BigInt!
+}
+
+type Harvest @entity {
+  "transaction id + deposit token address"
+  id: ID!
+  transaction: Transaction!
+  provider: Provider!
+  timestamp: BigInt! # need this to pull recent txns for specific token or pair
+
+  depositToken: Token!
+  earnToken: Token!
+  "token amount earned in earn token"
+  earns: BigDecimal!
+  "token amount earned in Sashimi"
+  earnsInSashimi: BigDecimal!
+
+  "transaction sender"
+  sender: Bytes!
+}
+
+type DayBonus @entity {
+  "deposit token + unix timestamp"
+  id: ID!
+  date: BigInt!
+  bonus: Token!
+  amount: BigDecimal!
+  sashimiAmount: BigDecimal!
+  txCount: BigInt!
+}
+
+type TotalBonus @entity {
+  "deposit token address"
+  id: ID!
+  bonus: Token!
+  amount: BigDecimal!
+  sashimiAmount: BigDecimal!
+  txCount: BigInt!
 }

@@ -1,27 +1,44 @@
 specVersion: 0.0.2
-description: Gravatar for Ethereum
+description: Statistic for Sashimi vault
 repository: https://github.com/graphprotocol/example-subgraph
 schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: Gravity
+    name: Investment
     network: mainnet
     source:
-      address: '0x2E645469f354BB4F5c8a05B3b30A929361cf77eC'
-      abi: Gravity
+      address: '0x4ce106235b6d876c66117fda1f6025e3fb87d3ec'
+      abi: Investment
+      startBlock: 10948430
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.3
+      apiVersion: 0.0.4
       language: wasm/assemblyscript
       entities:
-        - Gravatar
+        - Token
+        - Pair
+        - Provider
       abis:
-        - name: Gravity
-          file: ./abis/Gravity.json
+        - name: Investment
+          file: ./abis/investment.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+        - name: ERC20SymbolBytes
+          file: ./abis/ERC20SymbolBytes.json
+        - name: ERC20NameBytes
+          file: ./abis/ERC20NameBytes.json
+        - name: Vault
+          file: ./abis/vault.json
       eventHandlers:
-        - event: NewGravatar(uint256,address,string,string)
-          handler: handleNewGravatar
-        - event: UpdatedGravatar(uint256,address,string,string)
-          handler: handleUpdatedGravatar
+        - event: ProviderAdded(indexed address,address,uint256)
+          handler: handleNewProvider
+        - event: ProviderSwitched(indexed address,address,uint256)
+          handler: handleProviderSwitched
+        - event: ProviderDisabled(uint256)
+          handler: handleProviderDisabled
+        - event: ProviderEnabled(uint256)
+          handler: handleProviderEnabled
+        - event: Harvested(address,address,uint256,uint256)
+          handler: handleHarvested
       file: ./src/mapping.ts
